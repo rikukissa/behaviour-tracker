@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
+import * as Icons from "react-icons/lib/io";
 
 const EMOJIS = ["😤", "😣", "😕", "😊", "😃"];
 
@@ -9,11 +10,11 @@ interface IStudentProps {
   selected: boolean;
 }
 
-const Container = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
+export const StudentBox = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
   padding: 1em;
   margin: 1em;
-  background: linear-gradient(135deg, rgba(248, 78, 175, 1) 0%, #e28cac 100%);
-  color: #fff;
+  border: 4px solid #454545;
+  color: #454545;
   font-family: "Lato", sans-serif;
   font-size: 20px;
   font-weight: 600;
@@ -30,7 +31,10 @@ const Container = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
       : ""};
 `;
 
-const Name = styled.div``;
+const Name = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 const Emoji = styled.div`
   font-size: 30px;
@@ -50,10 +54,17 @@ export function Student({ onClick, selected, name }: IStudentProps) {
   const emojis = EMOJIS.map(emoji => <Emoji key={emoji}>{emoji}</Emoji>);
 
   return (
-    <Container selected={selected} onClick={() => onClick(name)}>
-      <Name>{name}</Name>
+    <StudentBox selected={selected} onClick={() => onClick(name)}>
+      <Name>
+        {name}
+        {selected && (
+          <div>
+            <Icons.IoClipboard />
+          </div>
+        )}
+      </Name>
 
       {selected && <Emojis>{emojis}</Emojis>}
-    </Container>
+    </StudentBox>
   );
 }

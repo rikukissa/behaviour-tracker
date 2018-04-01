@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-icons": "^2.2.5",
+    "@types/react-jsonschema-form": "^1.0.3",
+    "@types/react-modal": "^3.1.2",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
+    "react-icons": "^2.2.7",
+    "react-jsonschema-form": "^1.0.2",
+    "react-modal": "^3.3.2",
     "react-scripts-ts": "2.14.0",
     "styled-components": "^3.2.5"
   },

@@ -1,27 +1,24 @@
 import * as React from "react";
+import * as Modal from "react-modal";
+import Form from "react-jsonschema-form";
+import * as Icons from "react-icons/lib/io";
+
+import { Student, StudentBox } from "./components/Student";
 import styled from "styled-components";
-import { Student } from "./components/Student";
+import { StateProvider, StateContext } from "./State";
 
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
+  height: 100%;
+  background: #f4f5f0;
 `;
 
-const NAMES = [
-  "Niko",
-  "Pauli",
-  "Ali",
-  "Reima",
-  "Rami",
-  "Mauno",
-  "Rasmus",
-  "Paul",
-  "Reko",
-  "Mauri",
-  "Anselmi",
-  "Peetu",
-  "Altti"
-];
+const PlusButton = styled(StudentBox)`
+  align-items: center;
+  justify-content: center;
+  display: flex;
+`;
 
 class App extends React.Component {
   public state = {
@@ -34,14 +31,44 @@ class App extends React.Component {
   public render() {
     return (
       <Container>
-        {NAMES.map(name => (
-          <Student
-            key={name}
-            name={name}
-            selected={this.state.selected === name}
-            onClick={this.selectStudent}
-          />
-        ))}
+        <StateProvider>
+          <StateContext.Consumer>
+            {({ state, actions }) => (
+              <div>
+                {state.students.map(student => (
+                  <Student
+                    key={student.name}
+                    name={student.name}
+                    selected={this.state.selected === student.name}
+                    onClick={this.selectStudent}
+                  />
+                ))}
+                <PlusButton selected={false}>
+                  <Icons.IoPlusRound
+                    size={50}
+                    onClick={actions.toggleStudentEditor}
+                  />
+                </PlusButton>
+                <Modal ariaHideApp={false} isOpen={state.addingStudent}>
+                  <Form
+                    onSubmit={({ formData }) => actions.addStudent(formData)}
+                    schema={{
+                      title: "Oppilas",
+                      type: "object",
+                      required: ["name"],
+                      properties: {
+                        name: {
+                          type: "string",
+                          title: "Nimi"
+                        }
+                      }
+                    }}
+                  />
+                </Modal>
+              </div>
+            )}
+          </StateContext.Consumer>
+        </StateProvider>
       </Container>
     );
   }
