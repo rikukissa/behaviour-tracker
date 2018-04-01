@@ -21,7 +21,7 @@ const initialState: IState = {
   addingStudent: false
 };
 
-interface IFoo {
+interface IContext {
   state: IState;
   actions: {
     addStudent: (student: IStudent) => void;
@@ -29,7 +29,7 @@ interface IFoo {
   };
 }
 
-export const StateContext = React.createContext<IFoo>({
+export const StateContext = React.createContext<IContext>({
   state: initialState,
   actions: {} as any
 });

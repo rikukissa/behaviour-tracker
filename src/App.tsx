@@ -12,6 +12,7 @@ const Container = styled.div`
   flex-wrap: wrap;
   height: 100%;
   background: #f4f5f0;
+  padding: 2em;
 `;
 
 const PlusButton = styled(StudentBox)`

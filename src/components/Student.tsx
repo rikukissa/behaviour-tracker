@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
 import * as Icons from "react-icons/lib/io";
+import { Emojione } from "react-emoji-render";
 
 const EMOJIS = ["😤", "😣", "😕", "😊", "😃"];
 
@@ -51,7 +52,11 @@ const Emojis = styled.div`
 `;
 
 export function Student({ onClick, selected, name }: IStudentProps) {
-  const emojis = EMOJIS.map(emoji => <Emoji key={emoji}>{emoji}</Emoji>);
+  const emojis = EMOJIS.map(emoji => (
+    <Emoji key={emoji}>
+      <Emojione svg text={emoji} />
+    </Emoji>
+  ));
 
   return (
     <StudentBox selected={selected} onClick={() => onClick(name)}>

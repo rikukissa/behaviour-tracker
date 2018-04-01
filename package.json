@@ -8,6 +8,7 @@
     "@types/react-modal": "^3.1.2",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
+    "react-emoji-render": "^0.4.4",
     "react-icons": "^2.2.7",
     "react-jsonschema-form": "^1.0.2",
     "react-modal": "^3.3.2",
