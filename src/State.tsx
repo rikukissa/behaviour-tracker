@@ -1,18 +1,24 @@
 import * as React from "react";
-import { subDays } from "date-fns";
+import { subDays, getDay, addDays } from "date-fns";
+
+export interface IDataPoint {
+  added: Date;
+  value: number;
+}
 
 export interface IStudent {
   name: string;
-  data: Array<{ added: Date; value: number }>;
+  data: IDataPoint[];
 }
 
 function generateFakeData() {
   return Array(10)
     .fill(null)
     .map((_, i) => ({
-      added: subDays(new Date(), 10 - i),
-      value: Math.round(-2 + Math.random() * 5)
-    }));
+      added: subDays(addDays(new Date(), 4), 10 - i),
+      value: Math.round(-2 + Math.random() * 4)
+    }))
+    .filter(({ added }) => getDay(added) < 6);
 }
 
 function generateFakeStudents() {

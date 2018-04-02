@@ -4,7 +4,9 @@ import * as Icons from "react-icons/lib/io";
 import * as isSameDay from "date-fns/is_same_day";
 
 import { Emojione } from "react-emoji-render";
-import { IStudent } from "../State";
+import { IStudent, IDataPoint } from "../State";
+import { VictoryAxis, VictoryLine, VictoryChart } from "victory";
+import { isSameWeek, addDays, startOfISOWeek } from "date-fns";
 
 const EMOJIS = [
   { emoji: "😤", value: -2 },
@@ -23,7 +25,6 @@ interface IStudentProps {
 
 export const StudentBox = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
   width: 310px;
-  height: 105px;
   padding: 1em;
   margin: 1em;
   border: 4px solid #454545;
@@ -34,7 +35,8 @@ export const StudentBox = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
   cursor: pointer;
   transition: all 300ms;
   cursor: pointer;
-
+  display: flex;
+  flex-direction: column;
   ${({ selected }) =>
     selected
       ? css`
@@ -47,9 +49,16 @@ export const StudentBox = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
         `};
 `;
 
+const CardBody = styled.div`
+  padding-top: 1em;
+  display: flex;
+  height: 120px;
+`;
+
 const Name = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-shrink: 0;
 `;
 
 const Emoji = styled.div`
@@ -57,6 +66,8 @@ const Emoji = styled.div`
   padding: 0.5em;
   transition: all 300ms;
   cursor: pointer;
+  align-items: center;
+  display: flex;
   &:hover {
     transform: scale(1.2, 1.2);
   }
@@ -67,6 +78,7 @@ const Emojis = styled.div`
   justify-content: center;
   display: inline-flex;
   margin-top: 0.5em;
+  flex-grow: 1;
 `;
 
 const Tools = styled.div`
@@ -109,6 +121,38 @@ function getEmojiWithEmotionValue(value: number) {
   return emotion && emotion.emoji;
 }
 
+const WEEKDAYS = ["ma", "ti", "ke", "to", "pe"];
+
+function calculateAverage(points: IDataPoint[]) {
+  if (points.length === 0) {
+    return 0;
+  }
+  return points.reduce((sum, { value }) => sum + value, 0) / points.length;
+}
+
+const onlyFromThisWeek = (point: IDataPoint) =>
+  isSameWeek(new Date(), point.added);
+
+function getChartData(student: IStudent) {
+  const weeksDataPoint = student.data.filter(onlyFromThisWeek);
+  const weekStart = startOfISOWeek(new Date());
+
+  return Array(5)
+    .fill(null)
+    .map((_, i) => {
+      const day = addDays(weekStart, i);
+      const pointsForDay = weeksDataPoint.filter(point =>
+        isSameDay(point.added, day)
+      );
+      const average = calculateAverage(pointsForDay);
+
+      return {
+        x: i + 1,
+        y: average
+      };
+    });
+}
+
 export function Student({
   onClick,
   selected,
@@ -142,18 +186,51 @@ export function Student({
       </Name>
 
       {selected && <Emojis>{emojis}</Emojis>}
-      {!selected &&
-        emotion && (
-          <CurrentMood>
-            <Emojione svg text={getEmojiWithEmotionValue(emotion.value)} />
-          </CurrentMood>
-        )}
-      {!selected &&
-        !emotion && (
-          <CurrentMood isPlaceholder>
-            <Emojione svg text={"🙂"} />
-          </CurrentMood>
-        )}
+
+      {!selected && (
+        <CardBody>
+          <VictoryChart domainPadding={5} padding={10}>
+            <VictoryAxis
+              style={{
+                axis: { strokeWidth: 0 },
+                tickLabels: {
+                  display: "none"
+                }
+              }}
+              dependentAxis
+              domain={[-2, 2]}
+              offsetX={0}
+            />
+
+            <VictoryAxis
+              style={{
+                tickLabels: {
+                  fontSize: "40px"
+                },
+                axis: { stroke: "#454545", strokeWidth: 4 }
+              }}
+              tickCount={4}
+              tickFormat={t => WEEKDAYS[t - 1]}
+            />
+            <VictoryLine
+              style={{
+                data: { stroke: "#c43a31", strokeWidth: 7 }
+              }}
+              data={getChartData(student)}
+            />
+          </VictoryChart>
+
+          {!emotion ? (
+            <CurrentMood isPlaceholder>
+              <Emojione svg text={"🙂"} />
+            </CurrentMood>
+          ) : (
+            <CurrentMood>
+              <Emojione svg text={getEmojiWithEmotionValue(emotion.value)} />
+            </CurrentMood>
+          )}
+        </CardBody>
+      )}
     </StudentBox>
   );
 }

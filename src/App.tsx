@@ -7,11 +7,14 @@ import { StateProvider, StateContext } from "./State";
 import { StudentModal } from "./components/StudentModal";
 
 const Container = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  height: 100%;
+  min-height: 100%;
   background: #f4f5f0;
   padding: 2em;
+`;
+
+const Students = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   align-content: baseline;
 `;
 
@@ -42,15 +45,17 @@ class App extends React.Component {
           <StateContext.Consumer>
             {({ state, actions }) => (
               <>
-                {state.students.map(student => (
-                  <Student
-                    key={student.name}
-                    student={student}
-                    selected={this.state.selected === student.name}
-                    onEmotion={actions.storeEmotion}
-                    onClick={this.selectStudent}
-                  />
-                ))}
+                <Students>
+                  {state.students.map(student => (
+                    <Student
+                      key={student.name}
+                      student={student}
+                      selected={this.state.selected === student.name}
+                      onEmotion={actions.storeEmotion}
+                      onClick={this.selectStudent}
+                    />
+                  ))}
+                </Students>
                 <PlusButton
                   onClick={actions.toggleStudentEditor}
                   selected={false}
