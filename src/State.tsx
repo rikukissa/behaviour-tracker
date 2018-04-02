@@ -1,8 +1,8 @@
 import * as React from "react";
 
-interface IStudent {
+export interface IStudent {
   name: string;
-  data: any;
+  data: Array<{ added: Date; value: number }>;
 }
 
 const STUDENTS: IStudent[] = [
@@ -26,6 +26,7 @@ interface IContext {
   actions: {
     addStudent: (student: IStudent) => void;
     toggleStudentEditor: () => void;
+    storeEmotion: (name: string, value: number) => void;
   };
 }
 
@@ -34,7 +35,7 @@ export const StateContext = React.createContext<IContext>({
   actions: {} as any
 });
 
-export class StateProvider extends React.Component {
+export class StateProvider extends React.Component<{}, IState> {
   public state = initialState;
   private toggleStudentEditor = () => {
     this.setState({ addingStudent: !this.state.addingStudent });
@@ -45,9 +46,25 @@ export class StateProvider extends React.Component {
       addingStudent: false
     });
   };
+  private storeEmotion = (name: string, value: number) => {
+    this.setState({
+      students: this.state.students.map((student: IStudent) => {
+        if (student.name !== name) {
+          return student;
+        }
+
+        return {
+          ...student,
+          data: student.data.concat({ added: new Date(), value })
+        };
+      }),
+      addingStudent: false
+    });
+  };
   private actions = {
     addStudent: this.addStudent,
-    toggleStudentEditor: this.toggleStudentEditor
+    toggleStudentEditor: this.toggleStudentEditor,
+    storeEmotion: this.storeEmotion
   };
   public render() {
     return (

@@ -13,12 +13,17 @@ const Container = styled.div`
   height: 100%;
   background: #f4f5f0;
   padding: 2em;
+  align-content: baseline;
 `;
 
 const PlusButton = styled(StudentBox)`
   align-items: center;
   justify-content: center;
   display: flex;
+  &:not(:hover) {
+    background: #454545;
+    color: #f4f5f0;
+  }
 `;
 
 class App extends React.Component {
@@ -35,22 +40,24 @@ class App extends React.Component {
         <StateProvider>
           <StateContext.Consumer>
             {({ state, actions }) => (
-              <div>
+              <>
                 {state.students.map(student => (
                   <Student
                     key={student.name}
-                    name={student.name}
+                    student={student}
                     selected={this.state.selected === student.name}
+                    onEmotion={actions.storeEmotion}
                     onClick={this.selectStudent}
                   />
                 ))}
-                <PlusButton selected={false}>
-                  <Icons.IoPlusRound
-                    size={50}
-                    onClick={actions.toggleStudentEditor}
-                  />
+                <PlusButton
+                  onClick={actions.toggleStudentEditor}
+                  selected={false}
+                >
+                  <Icons.IoPlusRound size={50} />
                 </PlusButton>
                 <Modal ariaHideApp={false} isOpen={state.addingStudent}>
+                  <Icons.IoClose onClick={actions.toggleStudentEditor} />
                   <Form
                     onSubmit={({ formData }) => actions.addStudent(formData)}
                     schema={{
@@ -66,7 +73,7 @@ class App extends React.Component {
                     }}
                   />
                 </Modal>
-              </div>
+              </>
             )}
           </StateContext.Consumer>
         </StateProvider>
