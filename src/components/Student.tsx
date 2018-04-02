@@ -28,7 +28,6 @@ export const StudentBox = styled.div.attrs<Pick<IStudentProps, "selected">>({})`
   margin: 1em;
   border: 4px solid #454545;
   color: #454545;
-  font-family: "Lato", sans-serif;
   font-size: 20px;
   font-weight: 600;
   padding: 1em;

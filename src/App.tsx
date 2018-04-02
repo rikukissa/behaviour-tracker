@@ -1,11 +1,10 @@
 import * as React from "react";
-import * as Modal from "react-modal";
-import Form from "react-jsonschema-form";
 import * as Icons from "react-icons/lib/io";
 
 import { Student, StudentBox } from "./components/Student";
 import styled from "styled-components";
 import { StateProvider, StateContext } from "./State";
+import { StudentModal } from "./components/StudentModal";
 
 const Container = styled.div`
   display: flex;
@@ -17,6 +16,8 @@ const Container = styled.div`
 `;
 
 const PlusButton = styled(StudentBox)`
+  width: 50px;
+  height: 40px;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -56,23 +57,7 @@ class App extends React.Component {
                 >
                   <Icons.IoPlusRound size={50} />
                 </PlusButton>
-                <Modal ariaHideApp={false} isOpen={state.addingStudent}>
-                  <Icons.IoClose onClick={actions.toggleStudentEditor} />
-                  <Form
-                    onSubmit={({ formData }) => actions.addStudent(formData)}
-                    schema={{
-                      title: "Oppilas",
-                      type: "object",
-                      required: ["name"],
-                      properties: {
-                        name: {
-                          type: "string",
-                          title: "Nimi"
-                        }
-                      }
-                    }}
-                  />
-                </Modal>
+                <StudentModal />
               </>
             )}
           </StateContext.Consumer>
