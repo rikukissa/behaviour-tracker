@@ -121,7 +121,7 @@ function getEmojiWithEmotionValue(value: number) {
   return emotion && emotion.emoji;
 }
 
-const WEEKDAYS = ["ma", "ti", "ke", "to", "pe"];
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 function calculateAverage(points: IDataPoint[]) {
   if (points.length === 0) {

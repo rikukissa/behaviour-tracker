@@ -22,7 +22,7 @@ function generateFakeData() {
 }
 
 function generateFakeStudents() {
-  const names = ["Riku", "Pauli", "Ali"];
+  const names = ["John", "Paul", "Mikko"];
   return names.map(name => ({ name, data: generateFakeData() }));
 }
 

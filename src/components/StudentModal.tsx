@@ -102,13 +102,13 @@ export function StudentModal() {
           <Form
             onSubmit={({ formData }) => actions.addStudent(formData)}
             schema={{
-              title: "Uusi oppilas",
+              title: "New student",
               type: "object",
               required: ["name"],
               properties: {
                 name: {
                   type: "string",
-                  title: "Nimi"
+                  title: "Name"
                 }
               }
             }}
