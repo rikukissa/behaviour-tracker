@@ -4,7 +4,7 @@ import * as Icons from "react-icons/lib/io";
 import * as isSameDay from "date-fns/is_same_day";
 
 import { Emojione } from "react-emoji-render";
-import { IStudent, IDataPoint } from "../State";
+import { IStudent, IDataPoint } from "../store";
 import { VictoryAxis, VictoryLine, VictoryChart } from "victory";
 import { isSameWeek, addDays, startOfISOWeek } from "date-fns";
 

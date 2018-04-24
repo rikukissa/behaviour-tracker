@@ -1,7 +1,10 @@
 import * as React from "react";
+import { Provider } from "react-redux";
 import * as ReactDOM from "react-dom";
-import App from "./App";
 import { injectGlobal } from "styled-components";
+
+import { store } from "./store";
+import App from "./App";
 
 // tslint:disable-next-line no-unused-expression
 injectGlobal`
@@ -14,4 +17,9 @@ injectGlobal`
   }
 `;
 
-ReactDOM.render(<App />, document.getElementById("root") as HTMLElement);
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root") as HTMLElement
+);

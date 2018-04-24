@@ -3,7 +3,8 @@ import * as Modal from "react-modal";
 import Form from "react-jsonschema-form";
 import * as Icons from "react-icons/lib/io";
 import styled, { injectGlobal } from "styled-components";
-import { StateContext } from "../State";
+import { connect } from "react-redux";
+import { IState, addStudent, toggleStudentEditor, IStudent } from "../store";
 
 function ReactModalAdapter({ className, modalClassName, ...props }: any) {
   return (
@@ -91,30 +92,41 @@ injectGlobal`
   }
 `;
 
-export function StudentModal() {
+function StudentModalComponent(
+  props: { addingStudent: boolean } & {
+    toggleStudentEditor: () => void;
+    addStudent: (student: IStudent) => void;
+  }
+) {
   return (
-    <StateContext.Consumer>
-      {({ state, actions }) => (
-        <MyModal ariaHideApp={false} isOpen={state.addingStudent}>
-          <Close onClick={actions.toggleStudentEditor}>
-            <Icons.IoClose size={40} />
-          </Close>
-          <Form
-            onSubmit={({ formData }) => actions.addStudent(formData)}
-            schema={{
-              title: "New student",
-              type: "object",
-              required: ["name"],
-              properties: {
-                name: {
-                  type: "string",
-                  title: "Name"
-                }
-              }
-            }}
-          />
-        </MyModal>
-      )}
-    </StateContext.Consumer>
+    <MyModal ariaHideApp={false} isOpen={props.addingStudent}>
+      <Close onClick={props.toggleStudentEditor}>
+        <Icons.IoClose size={40} />
+      </Close>
+      <Form
+        onSubmit={({ formData }) => props.addStudent(formData)}
+        schema={{
+          title: "New student",
+          type: "object",
+          required: ["name"],
+          properties: {
+            name: {
+              type: "string",
+              title: "Name"
+            }
+          }
+        }}
+      />
+    </MyModal>
   );
 }
+
+export const StudentModal = connect(
+  (state: IState) => ({
+    addingStudent: state.addingStudent
+  }),
+  {
+    addStudent,
+    toggleStudentEditor
+  }
+)(StudentModalComponent);

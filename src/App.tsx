@@ -3,8 +3,10 @@ import * as Icons from "react-icons/lib/io";
 
 import { Student, StudentBox } from "./components/Student";
 import styled from "styled-components";
-import { StateProvider, StateContext } from "./State";
+
 import { StudentModal } from "./components/StudentModal";
+import { IState, storeEmotion, toggleStudentEditor, IStudent } from "./store";
+import { connect } from "react-redux";
 
 const Container = styled.div`
   min-height: 100%;
@@ -30,7 +32,19 @@ const PlusButton = styled(StudentBox)`
   }
 `;
 
-class App extends React.Component {
+interface IAppProps {
+  students: IStudent[];
+}
+interface IAppDispatchProps {
+  storeEmotion: (name: string, value: number) => any;
+  toggleStudentEditor: () => any;
+}
+
+interface IAppState {
+  selected: string | null;
+}
+
+class App extends React.Component<IAppProps & IAppDispatchProps, IAppState> {
   public state = {
     selected: null
   };
@@ -41,35 +55,33 @@ class App extends React.Component {
   public render() {
     return (
       <Container>
-        <StateProvider>
-          <StateContext.Consumer>
-            {({ state, actions }) => (
-              <>
-                <Students>
-                  {state.students.map(student => (
-                    <Student
-                      key={student.name}
-                      student={student}
-                      selected={this.state.selected === student.name}
-                      onEmotion={actions.storeEmotion}
-                      onClick={this.selectStudent}
-                    />
-                  ))}
-                </Students>
-                <PlusButton
-                  onClick={actions.toggleStudentEditor}
-                  selected={false}
-                >
-                  <Icons.IoPlusRound size={50} />
-                </PlusButton>
-                <StudentModal />
-              </>
-            )}
-          </StateContext.Consumer>
-        </StateProvider>
+        <Students>
+          {this.props.students.map(student => (
+            <Student
+              key={student.name}
+              student={student}
+              selected={this.state.selected === student.name}
+              onEmotion={this.props.storeEmotion}
+              onClick={this.selectStudent}
+            />
+          ))}
+        </Students>
+        <PlusButton onClick={this.props.toggleStudentEditor} selected={false}>
+          <Icons.IoPlusRound size={50} />
+        </PlusButton>
+        <StudentModal />
       </Container>
     );
   }
 }
 
-export default App;
+export default connect(
+  (state: IState) =>
+    console.log(state) || {
+      students: state.students
+    },
+  {
+    storeEmotion,
+    toggleStudentEditor
+  }
+)(App);
